@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
+import AddRecipe from '../views/AddRecipe.vue'
+import RecipeDetails from '../views/RecipeDetails.vue'
+import EditRecipe from '../views/EditRecipe.vue'
+
 import store from '../store'
 const routes = [
   {
@@ -18,6 +22,26 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: Home,
+    meta:{authorized:true}
+  },
+  {
+    path: '/addRecipe',
+    name: 'AddRecipe',
+    component: AddRecipe,
+    meta:{authorized:true}
+  },
+  {
+    path: '/recipeDetails/:id',
+    name: 'RecipeDetails',
+    component: RecipeDetails,
+    props:true,
+    meta:{authorized:true}
+  },
+  {
+    path: '/editRecipe/:id',
+    name: 'EditRecipe',
+    component: EditRecipe,
+    props:true,
     meta:{authorized:true}
   },
 ]

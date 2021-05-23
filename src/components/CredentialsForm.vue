@@ -35,8 +35,8 @@ export default {
   data() {
       return {
           formLogin :{
-              email:'',
-              password:''
+              email:'nahuel@gmail.com',
+              password:'123456'
           }
       }
   },
