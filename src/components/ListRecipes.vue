@@ -9,18 +9,21 @@
       <td class="flex justify-center p-1">
         <router-link class='bg-gray-200 p-1 mr-1 rounded' :to="`/recipeDetails/${recipe.id}`">ver</router-link>
         <router-link class='bg-gray-200 p-1 mr-1 rounded' :to="`/editRecipe/${recipe.id}`">editar</router-link>
-        <router-link class='bg-gray-200 p-1 mr-1 rounded'  to="/">borrar</router-link>
+        <button @click='deleteRecipe(recipe.id)' class='bg-gray-200 p-1 mr-1 rounded' type="submit">borrar</button>
       </td>
     </tr>
   </table>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "ListRecipies",
   computed: {
     ...mapGetters(["recipes"]),
+  },
+  methods: {
+    ...mapActions(['deleteRecipe'])
   },
 };
 </script>

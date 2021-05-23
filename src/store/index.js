@@ -41,6 +41,12 @@ export default createStore({
     },
     setAllRecipiesUser(state,payload){
       state.recipes  = payload
+    },
+    update(state,payload){
+      state.recipes = state.recipes.map(item => item.id === payload.id ? payload : item)
+    },
+    delete(state,payload){
+      state.recipes = state.recipes.filter(item => item.id !== payload)
     }
   },
   actions: {
@@ -115,10 +121,11 @@ export default createStore({
       }
     
       try {
-        const req = await fetch(`https://recetas-bb9c7-default-rtdb.firebaseio.com/recipes/${state.user.localId}/recipe.json?auth=${state.user.idToken}`)
+        const req = await fetch(`https://recetas-bb9c7-default-rtdb.firebaseio.com/recipes/${state.user.localId}.json?auth=${state.user.idToken}`)
         const res = await req.json() 
         const arrayRecipes = []
         for(let id in res){
+          
           arrayRecipes.push(res[id]);
         }
         commit('setAllRecipiesUser',arrayRecipes)
@@ -128,23 +135,51 @@ export default createStore({
     },
     async pushNewRecipe({commit,state},recipe){
       try {
-        const req = await fetch(`https://recetas-bb9c7-default-rtdb.firebaseio.com/recipes/${state.user.localId}/recipe.json?auth=${state.user.idToken}`,{
-          method:'POST',
+        const req = await fetch(`https://recetas-bb9c7-default-rtdb.firebaseio.com/recipes/${state.user.localId}/${recipe.id}.json?auth=${state.user.idToken}`,{
+          method:'PUT',
           headers:{
             'Conten-type':'application/json'
           },
           body:JSON.stringify(recipe)
         })
         const res = await req.json()
-
+        router.push('/home')
       } catch (error) {
         console.log(error);
       }
       commit('setRecipes',recipe)
     },
+    /**
+     * getOneRecipeForDetail
+     * para detalles o edicion
+     */
     getOneRecipeForDetail({commit,state},id){
       const req = state.recipes.find(item => item.id === id)
       commit('setOneRecipeForDetail',req)
+    },
+    async updateRecipe({commit,state},recipe){
+      try {
+        const req = await fetch(`https://recetas-bb9c7-default-rtdb.firebaseio.com/recipes/${state.user.localId}/${recipe.id}.json?auth=${state.user.idToken}`,{
+          method:'PATCH',
+          body:JSON.stringify(recipe)
+        })
+        const res = await req.json();
+        
+        commit('update',res)
+        router.push('/home')
+      } catch (error) {
+          console.log(error);
+      }
+    },
+    async deleteRecipe({commit,state},id){
+      try {
+        fetch(`https://recetas-bb9c7-default-rtdb.firebaseio.com/recipes/${state.user.localId}/${id}.json?auth=${state.user.idToken}`,{
+          method:'DELETE'
+        })
+        commit('delete',id)
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
   getters: {

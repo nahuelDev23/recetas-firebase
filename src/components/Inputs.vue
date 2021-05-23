@@ -1,12 +1,11 @@
 <template>
-  <form @submit.prevent="addRecipe">
-    <legend class="text-center">Agregar Receta</legend>
-    <input
+      <input
       type="text"
       class="p-2 w-full rounded shadow mt-2"
       v-model="recipe.title"
       name="title"
       placeholder="Nombre de la receta"
+      @keyup="this.$emit('checkTitleAndCategory')"
     />
     <input
       type="text"
@@ -22,6 +21,7 @@
         id="almuerzo"
         value="Almuerzo"
         v-model="recipe.categories"
+         @change="this.$emit('checkTitleAndCategory')"
       />
     </label>
     <label class="mt-4 flex items-center" for="merienda">
@@ -72,7 +72,7 @@
         v-model="ingredients.name"
         name="ingredients"
         :placeholder="`Ingrediente #${index + 1}`"
-        required
+        
       />
       <div
         class="bg-gray-500 p-2 mt-2 rounded rounded-l-none shadow text-white"
@@ -111,7 +111,7 @@
         v-model="steps.name"
         name="steps"
         :placeholder="`Paso #${index + 1}`"
-        required
+        
       />
       <div
         class="bg-gray-500 p-2 mt-2 rounded rounded-l-none shadow text-white"
@@ -127,37 +127,17 @@
         >
       </div>
     </div>
-    <BtnForm text="Guardar" @send="sendRecipe" class="w-full" />
-  </form>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import BtnForm from "./BtnForm.vue";
-const shortid = require("shortid");
 export default {
-  components: { BtnForm },
-  name: "FormRecipe",
-  props:['recipe'],
-  data() {
+    name:'Inputs',
+    props:['recipe'],
+    emits: ["checkTitleAndCategory"],
+    data() {
     return {
       stepsInputs: false,
-      recipe: {
-        id: "",
-        title: "",
-        description: "",
-        categories: [],
-        ingredients: [
-          {
-            name: "",
-          },
-        ],
-        steps: [
-          {
-            name: "",
-          },
-        ],
-      },
+      
     };
   },
   computed: {
@@ -170,8 +150,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["pushNewRecipe"]),
-    addInputIngredient() {
+     addInputIngredient() {
       this.recipe.ingredients.push({ name: "" });
     },
     removeInputIngredient(index) {
@@ -183,29 +162,19 @@ export default {
     removeInputStep(index) {
       this.recipe.steps.splice(index, 1);
     },
-    sendRecipe() {
-      this.recipe.id = shortid.generate();
-      this.pushNewRecipe(this.recipe);
-      this.recipe = {
-        id: "",
-        title: "",
-        description: "",
-        categories: [],
-        ingredients: [
-          {
-            name: "",
-          },
-        ],
-        steps: [
-          {
-            name: "",
-          },
-        ],
-      };
-    },
+    checkIfInEditRequestHaveSteps(){
+      if(this.recipe.steps.length > 1){
+        this.stepsInputs = true
+        
+      }
+    }
   },
-};
+  created(){
+    this.checkIfInEditRequestHaveSteps()
+  }
+}
 </script>
 
 <style>
+
 </style>

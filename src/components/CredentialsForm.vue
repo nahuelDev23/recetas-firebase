@@ -44,7 +44,6 @@ export default {
       ...mapActions(['loginUser']),
     submitFormLogin() {
       this.loginUser({email:this.formLogin.email,password:this.formLogin.password})
-      console.log(this.formLogin)
     },
   },
 };
